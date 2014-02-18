@@ -22,7 +22,27 @@ var module=function(){
         //var username=obtainUserNameFromSession();
         //log.debug('logged in user: '+username);
 		//Go through each field
+        var tableName  = null;
+        var isNewTable = false;
+        var isEndTable = false;
 		for each(var field in table.fields){
+            if(tableName == null){
+                isEndTable = true;
+                isNewTable = true;
+            } else {
+                isNewTable = false;
+                isEndTable = false;
+            }
+            if (tableName == null && table.name == 'overview') {
+                isEndTable = false;
+            }
+            //if (tableName != null && !table.name.equals(tableName)){
+            //    isEndTable = true;
+            //}
+
+            tableName = table.name;
+            //table.isNewTable =   isNewTable;
+
 			
 			//Obtain the field details from the template
 			var fieldTemplate=template.getField(table.name,field.name);
@@ -51,6 +71,10 @@ var module=function(){
 			data['value']=field.value;
 			
 			data['valueList']=csvToArray(fieldTemplate.value||'');
+            //log.info(table);
+            data['isNewTable']= isNewTable;
+            data['isEndTable']= isEndTable;
+            data['tableName']= tableName;
 			
 			fieldArray.push(data);
 			}
@@ -81,17 +105,15 @@ var module=function(){
 	function fillTables(model,template){
 		
 		var fieldArray=[];
-
-		//Go through each table in the model
+        //Go through each table in the model
 		for each(var table in model.dataTables){
-			
-			//Ignore if *
+            //Ignore if *
 			if(table.name!='*'){
 				fillFields(table,fieldArray,template);
 			}
 		}
 
-        log.debug('Fields: '+stringify(fieldArray));
+        log.info('Fields: '+stringify(fieldArray));
 		
 		return fieldArray;
 	}

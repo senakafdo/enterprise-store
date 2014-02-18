@@ -168,6 +168,7 @@ routeManager.register('POST', 'publisher', '/publisher/asset/{type}', function (
     var artifactManager = rxtManager.getArtifactManager(shortName);
     var model = modelManager.getModel(shortName);
     var assetCacheManager=new assetCachingModule.AssetCacheManager(session);
+    log.info(context.post);
 
 //context.post['tag-container'] = ['tag1', 'tag2'];
 

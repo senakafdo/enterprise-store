@@ -40,6 +40,29 @@
                 <div class="widget-content">
                     <form  class="form-horizontal" id="form-asset-create" action="/publisher/asset/gadget" method="POST" enctype="multipart/form-data">
                         {{#each data.fields}}
+
+                            {{#if this.isEndTable}}
+                                    </div>
+                                   </div>
+                                  </div>
+                                </div>
+                             {{/if}}
+
+                          {{#if this.isNewTable}}
+                                 <div class="accordion" id="{{this.tableName}}">
+                                   <div class="accordion-group">
+                                     <div class="accordion-heading"  style="height:45px;background:#C0C0C0;" href="#collapse{{this.tableName}}">
+                                         <div style="float:right;">
+                                            <a style="text-transform:capitalize;font-weight:bold;">{{this.tableName}}</a>
+                                            <a class="accordion-toggle" style="display: inline-block;" id="toggle-{{this.tableName}}" name="toggle-{{this.tableName}}" data-action="" data-toggle="collapse" href="#collapse{{this.tableName}}"><i class="icon icon-double-angle-down icon-2x"></i>
+                                            </a>
+                                         </div>
+                                     </div>
+                                     <div id="collapse{{this.tableName}}" class="accordion-body collapse" id="accordion-inner">
+                                        <div class="accordion-inner">
+                                 <p>{{this.tableName}}</p>
+                           {{/if}}
+
                         <div class="control-group">
                             <b><label class="control-label">{{this.label}} 
                             	
@@ -89,7 +112,15 @@
                                 {{/if}}
                             </div>
                         </div>
+
+
                         {{/each}}
+
+
+                                 </div>
+                                 </div>
+                                 </div>
+                                </div>
 
 						<div class="control-group">
 							<b><label class="control-label">Tags: </label></b>

@@ -1,0 +1,5 @@
+$(function(){
+
+    $('#collapseoverview').collapse('show');
+
+});
