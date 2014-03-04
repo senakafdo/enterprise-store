@@ -13,29 +13,39 @@ var meta={
 var module=function(){
 
     var log=new Log();
+
+    var buildOptionsObject = function (field, fieldTemplate, data) {
+        //Only apply the logic if the field type is options
+        if (!data.isOptions) {
+            return;
+        }
+
+        var optionData = {};
+        var options = csvToArray(fieldTemplate.value || '');
+        optionData['selected'] = field.value;
+
+        //Drop the selected value
+        optionData['options'] = options.filter(function (element) {
+            return element != field.value ? true : false;
+        });
+
+        data['optionData'] = optionData;
+
+    };
 	
 	/*
 	 * Go through each table and extract field data
 	 */
-	function fillFields(table,fieldArray,template){
+	function fillFields(table,fieldArray,template,isNewTable,isEndTable){
 
         //var username=obtainUserNameFromSession();
         //log.debug('logged in user: '+username);
 		//Go through each field
         var tableName  = null;
-        var isNewTable = false;
-        var isEndTable = false;
+        //var isNewTable = false;
+        //var isEndTable = false;
 		for each(var field in table.fields){
-            if(tableName == null){
-                isEndTable = true;
-                isNewTable = true;
-            } else {
-                isNewTable = false;
-                isEndTable = false;
-            }
-            if (tableName == null && table.name == 'overview') {
-                isEndTable = false;
-            }
+
             //if (tableName != null && !table.name.equals(tableName)){
             //    isEndTable = true;
             //}
@@ -74,15 +84,83 @@ var module=function(){
             //log.info(table);
             data['isNewTable']= isNewTable;
             data['isEndTable']= isEndTable;
-            data['tableName']= tableName;
-			
-			fieldArray.push(data);
-			}
+            data['tableName']= 'Show Advance Settings';
+            data['tableNameTest']= 'other';
+
+            if(!data['isRequired']){
+               fieldArray.push(data);
+               isNewTable = false;
+               isEndTable = false;
+            }
+
+            }
 
 		}
 
 		return fieldArray;
 	}
+
+    function fillReqFields(table,fieldArray,template,isNewTable,isEndTable){
+
+        //var username=obtainUserNameFromSession();
+        //log.debug('logged in user: '+username);
+        //Go through each field
+        var tableName  = null;
+        for each(var field in table.fields){
+
+
+            //if (tableName != null && !table.name.equals(tableName)){
+            //    isEndTable = true;
+            //}
+
+            tableName = table.name;
+            //table.isNewTable =   isNewTable;
+
+
+            //Obtain the field details from the template
+            var fieldTemplate=template.getField(table.name,field.name);
+
+            //We ignore the field if it is not in the template
+            if(!fieldTemplate){
+                log.debug('Ignoring field: '+stringify(fieldTemplate));
+                return;
+            }
+            //Ignore the field which is set as hidden
+            if(fieldTemplate.meta.hidden == "false"){
+                var data={};
+
+                data['name']=table.name+'_'+field.name;
+                data['label']=(fieldTemplate.label)?fieldTemplate.label:field.name;
+                data['isRequired']=(fieldTemplate.required)?true:false;
+                data['isTextBox']=(fieldTemplate.type=='text')?true:false;
+                data['isTextArea']=(fieldTemplate.type=='text-area')?true:false;
+                data['isOptions']=(fieldTemplate.type=='options')?true:false;
+                data['isOptionsText']=(fieldTemplate.type=='option-text')?true:false;
+
+                data['isReadOnly']=(fieldTemplate.meta.readOnly)?fieldTemplate.meta.readOnly:false;
+                data['isEditable']=(fieldTemplate.meta.editable)?fieldTemplate.meta.editable:false;
+                data['isFile']=(fieldTemplate.type=='file')?true:false;
+
+                data['value']=field.value;
+
+                data['valueList']=csvToArray(fieldTemplate.value||'');
+                //log.info(table);
+                data['isNewTable']= isNewTable;
+                data['isEndTable']= isEndTable;
+                data['tableName']= 'Required Information';
+                data['tableNameText']= 'required';
+                if(data['isRequired']){
+                    fieldArray.push(data);
+                    isNewTable = false;
+                    isEndTable = false;
+                }
+
+            }
+
+        }
+
+        return fieldArray;
+    }
 
     /*
     The function obtains the currently logged in user from the session
@@ -106,12 +184,31 @@ var module=function(){
 		
 		var fieldArray=[];
         //Go through each table in the model
-		for each(var table in model.dataTables){
+        var isNewTable = true;
+        var isEndTable = false;
+
+        for each(var table in model.dataTables){
             //Ignore if *
-			if(table.name!='*'){
-				fillFields(table,fieldArray,template);
-			}
-		}
+            if(table.name!='*'){
+                fillReqFields(table,fieldArray,template,isNewTable,isEndTable);
+                isNewTable = false;
+                isEndTable = false;
+            }
+        }
+
+
+        isNewTable = true;
+        isEndTable = true;
+
+        for each(var table in model.dataTables){
+            //Ignore if *
+            if(table.name!='*'){
+                fillFields(table,fieldArray,template,isNewTable,isEndTable);
+                isNewTable = false;
+                isEndTable = false;
+            }
+        }
+
 
         log.info('Fields: '+stringify(fieldArray));
 		

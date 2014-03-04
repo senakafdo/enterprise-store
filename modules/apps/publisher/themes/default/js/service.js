@@ -1,5 +1,5 @@
 $(function(){
 
-    $('#collapseoverview').collapse('show');
+    $('#collapserequired').collapse('show');
 
 });

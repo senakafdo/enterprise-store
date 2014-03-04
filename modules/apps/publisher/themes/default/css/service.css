@@ -2,3 +2,8 @@
 
 
 }
+
+.in.collapse.accordion-body{
+
+      overflow: visible;
+}

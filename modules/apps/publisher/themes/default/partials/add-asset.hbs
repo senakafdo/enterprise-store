@@ -51,14 +51,14 @@
                           {{#if this.isNewTable}}
                                  <div class="accordion" id="{{this.tableName}}">
                                    <div class="accordion-group">
-                                     <div class="accordion-heading"  style="height:45px;background:#C0C0C0;" href="#collapse{{this.tableName}}">
+                                     <div class="accordion-heading"  style="height:45px;background:#C0C0C0;" href="#collapse{{this.tableNameText}}">
                                          <div style="float:right;">
                                             <a style="text-transform:capitalize;font-weight:bold;">{{this.tableName}}</a>
-                                            <a class="accordion-toggle" style="display: inline-block;" id="toggle-{{this.tableName}}" name="toggle-{{this.tableName}}" data-action="" data-toggle="collapse" href="#collapse{{this.tableName}}"><i class="icon icon-double-angle-down icon-2x"></i>
+                                            <a class="accordion-toggle" style="display: inline-block;" id="toggle-{{this.tableNameText}}" name="toggle-{{this.tableNameText}}" data-action="" data-toggle="collapse" href="#collapse{{this.tableNameText}}"><i class="icon icon-double-angle-down icon-2x"></i>
                                             </a>
                                          </div>
                                      </div>
-                                     <div id="collapse{{this.tableName}}" class="accordion-body collapse" id="accordion-inner">
+                                     <div id="collapse{{this.tableNameText}}" class="accordion-body collapse" id="accordion-inner">
                                         <div class="accordion-inner">
                                  <p>{{this.tableName}}</p>
                            {{/if}}
